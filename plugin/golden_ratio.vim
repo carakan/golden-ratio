@@ -25,6 +25,10 @@ if !exists('g:golden_ratio_constant')
   let g:golden_ratio_constant = 1.618
 endif
 
+if !exists('g:golden_ratio_filetypes_blacklist')
+  let g:golden_ratio_filetypes_blacklist = []
+endif
+
 function! s:golden_ratio_width()
   return &columns / g:golden_ratio_constant
 endfunction
@@ -153,8 +157,8 @@ function! s:initiate_golden_ratio()
   if s:gr_auto
     aug GoldenRatioAug
       au!
-      au WinEnter,BufEnter * call <SID>resize_to_golden_ratio()
-      au BufLeave * let b:golden_ratio_saved_wrap = &wrap
+      au WinEnter,BufWinEnter * if index(g:golden_ratio_filetypes_blacklist, &ft) < 0 | call <SID>resize_to_golden_ratio() | endif
+      au BufLeave * if index(g:golden_ratio_filetypes_blacklist, &ft) < 0 | let b:golden_ratio_saved_wrap = &wrap | endif
     aug END
   endif
 endfunction
